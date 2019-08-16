@@ -191,7 +191,7 @@ end
 function get_as_dataframe(f::Fred, series::AbstractString)
     fred_dat = get_data(f, series)
     df       = fred_dat.data[:,[:date,:value]]
-    rename!(df,:value => Symbol("series")
+    rename!(df,:value => Symbol("series"))
     return df
 end
 
@@ -203,4 +203,3 @@ function get_panel(f::Fred, Series::Array{AbstractString,1})
         end
     end
 end
-    
