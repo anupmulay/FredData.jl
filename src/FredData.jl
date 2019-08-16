@@ -17,7 +17,7 @@ export
        FredSeries,
 
        # Download data
-       get_data, get_as_dataframe, get_panel,
+       get_data, get_as_dataframe, get_panel
 
 const MAX_ATTEMPTS       = 3
 const FIRST_REALTIME     = Date(1776,07,04)
