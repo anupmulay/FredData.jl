@@ -196,11 +196,11 @@ function get_as_dataframe(f::Fred, series::AbstractString)
 end
 
 function get_panel(f::Fred, Series::Array{String,1})
-    df = get_as_dataframe(f, AbstractString(Series[1]))
+    df = get_as_dataframe(f, Series[1])
     if size(Series)[1] > 1
         for i in 2:size(Series)[1]
             df = join(df,
-                      get_as_dataframe(f, AbstractString(Series[i])),
+                      get_as_dataframe(f, Series[i]),
                       on = :date)
         end
     end
