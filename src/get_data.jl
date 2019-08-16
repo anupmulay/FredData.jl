@@ -204,4 +204,5 @@ function get_panel(f::Fred, Series::Array{String,1})
                       on = :date)
         end
     end
+    return df
 end
