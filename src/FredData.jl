@@ -53,12 +53,12 @@ mutable struct Fred
         # Key validation
         if length(key) > API_KEY_LENGTH
             key = key[1:API_KEY_LENGTH]
-            warn("FRED API key too long. First $(API_KEY_LENGTH) chars used.")
+            @warn("FRED API key too long. First $(API_KEY_LENGTH) chars used.")
         elseif length(key) < API_KEY_LENGTH
-            error("Invalid FRED API key -- key too short: $(key)")
+           @error("Invalid FRED API key -- key too short: $(key)")
         end
         if !all(isxdigit, key)
-            error("Invalid FRED API key -- invalid characters: $(key)")
+           @error("Invalid FRED API key -- invalid characters: $(key)")
         end
         return new(key, url)
     end
@@ -72,7 +72,7 @@ function Fred()
             rstrip(read(file, String))
         end
     else
-        error("FRED API Key not detected.")
+       @error("FRED API Key not detected.")
     end
 
     println("API key loaded.")

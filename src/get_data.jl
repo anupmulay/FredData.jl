@@ -74,7 +74,7 @@ function get_data(f::Fred, series::AbstractString; kwargs...)
             metadata_parsed[Symbol(k)] = metadata_json["seriess"][1][k]
         catch err
             metadata_parsed[Symbol(k)] = ""
-            warn("Metadata '$k' not returned from server.")
+           @warn("Metadata '$k' not returned from server.")
         end
     end
 
@@ -134,55 +134,73 @@ function validate_args!(kwargs)
     # dates
     for k in [:realtime_start, :realtime_end, :observation_start, :observation_end]
         if (v = pop!(d, k, nothing)) != nothing && !isyyyymmdd(v)
-                error("$k: Invalid date format: $v")
+               @error("$k: Invalid date format: $v")
         end
     end
     # limit and offset
     for k in [:limit, :offset]
         if (v = pop!(d, k, nothing)) != nothing &&
             ( !(typeof(v) <: Number ) || typeof(v) <: Number && !(v>0) )
-                error("$k: Invalid format: $v")
+               @error("$k: Invalid format: $v")
         end
     end
     # units
     if (v = pop!(d, :units, nothing)) != nothing &&
         v ∉ ["lin", "chg", "ch1", "pch", "pc1", "pca", "cch", "log"]
-            error("units: Invalid format: $v")
+           @error("units: Invalid format: $v")
     end
     # frequency
     if (v = pop!(d, :frequency, nothing)) != nothing &&
         v ∉ ["d", "w", "bw", "m", "q", "sa", "a", "wef", "weth", "wew", "wetu", "wem",
              "wesu", "wesa", "bwew", "bwem"]
-            error("frequency: Invalid format: $v")
+           @error("frequency: Invalid format: $v")
     end
     # aggregation_method
     if (v = pop!(d, :aggregation_method, nothing)) != nothing &&
         v ∉ ["avg", "sum", "eop"]
-            error("aggregation_method: Invalid format: $v")
+           @error("aggregation_method: Invalid format: $v")
     end
     # output_type
     if (v = pop!(d, :output_type, nothing)) != nothing &&
         v ∉ [1, 2, 3, 4]
-            error("output_type: Invalid format: $v")
+           @error("output_type: Invalid format: $v")
     end
     # vintage dates, and too early vintages
     if (v = pop!(d, :vintage_dates, nothing)) != nothing
         vds_arr = split(string(v), ",")
         vds_bad = map(x -> !isyyyymmdd(x), vds_arr)
         if any(vds_bad)
-            error("vintage_dates: Invalid date format: $(vds_arr[vds_bad])")
+           @error("vintage_dates: Invalid date format: $(vds_arr[vds_bad])")
         end
         vds_early = map(x -> x<EARLY_VINTAGE_DATE, vds_arr)
         if any(vds_early)
-            warn(:vintage_dates, ": Early vintage date, data might not exist: ",
+           @warn(:vintage_dates, ": Early vintage date, data might not exist: ",
                 vds_arr[vds_early])
         end
     end
     # all remaining keys have unspecified behavior
     if length(d) > 0
         for k in keys(d)
-            warn(string(k), ": Bad key. Removed from query.")
+           @warn(string(k), ": Bad key. Removed from query.")
             deleteat!(kwargs, findall(x -> x[1]==k, kwargs))
         end
     end
 end
+
+
+function get_as_dataframe(f::Fred, series::AbstractString)
+    fred_dat = get_data(f, series)
+    df       = fred_dat.data[:,[:date,:value]]
+    rename!(df,:value => Symbol("series")
+    return df
+end
+
+function get_panel(f::Fred, Series::Array{AbstractString,1})
+    df = get_as_dataframe(f, Series[1])
+    if size(Series)[1] > 1
+        for i in 2:size(Series)[1]
+            df = join(df,get_as_dataframe(f, Series[i]))
+        end
+    end
+end
+    
