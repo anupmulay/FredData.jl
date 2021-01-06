@@ -1,2 +1,25 @@
 name = "FredData"
-uuid = "431ea639-dc5d-4d7f-87cb-adfa61e783c5"
+uuid = "6e85b7ee-7d24-5488-b1b7-e4f4198c51ac"
+author = ["Micah Smith <micahjsmith@gmail.com>"]
+version = "0.4.0"
+
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
+
+[compat]
+julia = "1"
+DataFrames = "≥ 0.18, <1"
+HTTP = "≥ 0.8, <1"
+JSON = "≥ 0.18, <1"
+TimeZones = "0.11, 1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
